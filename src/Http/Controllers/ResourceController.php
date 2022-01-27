@@ -19,7 +19,10 @@ class ResourceController
         $queryResult = $field->buildAttachableQuery($request, $query);
 
         if ($dependsOnValue) {
-            $queryResult = $queryResult->where($dependsOnKey, $dependsOnValue);
+            $tempModel = $field->resourceClass::newModel()->where('id', $dependsOnValue)->first();
+
+            $queryResult = $queryResult->where($dependsOnKey, $tempModel->{$dependsOnKey});
+            $queryResult = $queryResult->where('id', '!=', $dependsOnValue);
         }
 
         return $queryResult->get()

@@ -2,38 +2,40 @@
   <default-field :field="field" :errors="errors" :show-help-text="true">
     <template slot="field">
       <div
-        :style="{ height: field.height ? field.height : 'auto' }"
-        class="relative"
+          :style="{ height: field.height ? field.height : 'auto' }"
+          class="relative"
       >
         <div
-          v-if="loading"
-          class="py-6 px-8 flex justify-center items-center absolute pin z-50 bg-white"
+            v-if="loading"
+            class="py-6 px-8 flex justify-center items-center absolute pin z-50 bg-white"
         >
-          <loader class="text-60" />
+          <loader class="text-60"/>
         </div>
         <div v-if="this.field.selectAll" class="mb-2">
           <input
-            type="checkbox"
-            id="checkbox"
-            class="checkbox"
-            v-model="selectAll"
+              type="checkbox"
+              id="checkbox"
+              class="checkbox"
+              v-model="selectAll"
           />
           <label for="checkbox">{{ this.field.messageSelectAll }}</label>
         </div>
         <!--          <label v-if="this.field.selectAll"><input type="checkbox" class="checkbox mb-2 mr-2">{{this.field.messageSelectAll}}</label>-->
         <multi-select
-          ref="multiselect"
-          @open="() => repositionDropdown(true)"
-          :options="options"
-          v-bind="multiSelectProps"
-          v-model="value"
+            ref="multiselect"
+            @open="() => repositionDropdown(true)"
+            :options="options"
+            v-bind="multiSelectProps"
+            v-model="value"
         >
           <template slot="noOptions">{{
-            field.multiselectSlots.noOptions
-          }}</template>
+              field.multiselectSlots.noOptions
+            }}
+          </template>
           <template slot="noResult">{{
-            field.multiselectSlots.noResult
-          }}</template>
+              field.multiselectSlots.noResult
+            }}
+          </template>
         </multi-select>
       </div>
     </template>
@@ -41,7 +43,7 @@
 </template>
 
 <script>
-import { FormField, HandlesValidationErrors } from "laravel-nova";
+import {FormField, HandlesValidationErrors} from "laravel-nova";
 import MultiSelect from "vue-multiselect";
 import get from "lodash.get";
 
@@ -106,11 +108,11 @@ export default {
       if (!ms) return;
       const el = ms.$el;
       const handlePositioning = () => {
-        const { top, height, bottom } = el.getBoundingClientRect();
+        const {top, height, bottom} = el.getBoundingClientRect();
         if (onOpen) ms.$refs.list.scrollTop = 0;
         const fromBottom =
-          (window.innerHeight || document.documentElement.clientHeight) -
-          bottom;
+            (window.innerHeight || document.documentElement.clientHeight) -
+            bottom;
         ms.$refs.list.style.position = "fixed";
         ms.$refs.list.style.width = `${el.clientWidth}px`;
         if (fromBottom < 300) {
@@ -170,8 +172,8 @@ export default {
      */
     setInitialValue() {
       this.optionsLabel = this.field.optionsLabel
-        ? this.field.optionsLabel
-        : "name";
+          ? this.field.optionsLabel
+          : "name";
       this.trackBy = this.field.trackBy ? this.field.trackBy : "id";
       this.value = this.field.value.map((el) => ({
         ...el,
@@ -192,7 +194,7 @@ export default {
         if (this.dependsOnValue) {
           this.loading = true;
           Nova.request(
-            baseUrl +
+              baseUrl +
               this.resourceName +
               "/" +
               "options/" +
@@ -205,15 +207,19 @@ export default {
               this.field.dependsOnKey
           ).then((data) => {
             this.options = data.data;
+            this.value = [];
+            this.selectAll = false;
             this.loading = false;
           });
         } else {
           this.options = [];
+          this.value = [];
+          this.selectAll = false;
           this.loading = false;
         }
       } else {
         Nova.request(
-          baseUrl +
+            baseUrl +
             this.resourceName +
             "/" +
             "options/" +
@@ -222,6 +228,8 @@ export default {
             this.optionsLabel
         ).then((data) => {
           this.options = data.data;
+          this.value = [];
+          this.selectAll = false;
           this.loading = false;
         });
       }
